@@ -94,6 +94,8 @@
 			);
 			mainGroup = EE51225F2CFBFDD000F8A24C;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EE5122692CFBFDD000F8A24C /* Products */;
 			projectDirPath = "";

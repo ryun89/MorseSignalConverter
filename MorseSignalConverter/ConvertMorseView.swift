@@ -7,11 +7,14 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    @State var inputText: String = ""
-    
+struct ConvertMorseView: View {
+    @State var inputText: String = "" // モールス信号に変換する文字列
+    @State var outputText: String = "" // モールス信号に変換した文字列
+
     var body: some View {
         ZStack {
+            Color(UIColor(displayP3Red: 46/255, green: 46/255, blue: 46/255, alpha: 1))
+                .edgesIgnoringSafeArea(.all) // 画面全体を覆う
             VStack {
                 HStack {
                     Spacer()
@@ -43,25 +46,27 @@ struct ContentView: View {
                 
                 TextEditor(text: $inputText)
                     .frame(width:350, height: 300)
+                    .scrollContentBackground(.hidden)
+                    .background(.gray)
                     .overlay(alignment: .topLeading) {
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.gray, lineWidth: 0.8)
                         // 未入力の時、プレースホルダーを表示
                         if inputText.isEmpty {
                             Text("ここに文字を入力してください。")
                                 .allowsHitTesting(false) // タップ判定を無効化
                                 .foregroundColor(Color(uiColor: .placeholderText))
-                                .padding(6)
                         }
                     }
                 
                 VStack {
                     Button(action: {
-                        print("Button was tapped!")
+                        Task {
+                            let converted = await convertToHiragana(input: inputText)
+                            outputText = converted
+                        }
                     }) {
                         Image(systemName: "waveform.path")
                             .resizable()  // アイコンをリサイズ
-                            .frame(width: 40, height: 40)  // アイコンのサイズを設定
+                            .frame(width: 50, height: 50)  // アイコンのサイズを設定
                             .padding()
                             .background(Color.mint)  // アイコンの背景色
                             .foregroundColor(.white)  // アイコンの色
@@ -69,11 +74,17 @@ struct ContentView: View {
                     }
                 }
                 .padding(.top, 30)
+                
+                if !outputText.isEmpty {
+                    Text("Converted: \(outputText)")
+                        .padding(.top, 20)
+                        .foregroundColor(.white)
+                }
             }
         }
     }
 }
 
 #Preview {
-    ContentView()
+    HomeView()
 }
